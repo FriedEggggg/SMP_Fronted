@@ -3,6 +3,7 @@ import "ant-design-vue/dist/antd.css";
 import { createApp } from "vue";
 import { createRouter, createWebHistory } from "vue-router";
 import App from "./App.vue";
+import "./global.css";
 import BrowsingHistory from "./pages/BrowsingHistory.vue";
 import Chat from "./pages/chat.vue";
 import Friends from "./pages/friends.vue";
@@ -18,7 +19,6 @@ import shop from "./pages/shop.vue";
 import Star from "./pages/Star.vue";
 import store from "./store/store";
 import "./style.scss";
-
 const routes = [
   {
     path: "/",
@@ -80,7 +80,6 @@ router.beforeEach((to, from) => {
 
   // 如果未登录则重定向到登录
   if (currentUser === null && to.name !== "login" && to.name !== "register") {
-    console.log("test");
     return { name: "login" };
   }
 });
