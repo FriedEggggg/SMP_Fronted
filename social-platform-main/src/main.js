@@ -17,6 +17,7 @@ import Register from "./pages/register.vue";
 import SearchResult from "./pages/SearchResult.vue";
 import shop from "./pages/shop.vue";
 import Star from "./pages/Star.vue";
+import Statistics from "./pages/Statistics.vue";
 import store from "./store/store";
 import "./style.scss";
 const routes = [
@@ -68,6 +69,7 @@ const routes = [
   },
   { name: "login", path: "/login/:username?", component: Login },
   { name: "register", path: "/register", component: Register },
+  { path: "/statistics", component: Statistics },
 ];
 
 const router = createRouter({

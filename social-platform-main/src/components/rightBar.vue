@@ -1,8 +1,14 @@
 <script>
+import {
+  CheckSquareTwoTone,
+  ClockCircleTwoTone,
+  DollarOutlined,
+  GiftTwoTone,
+  StarTwoTone,
+} from "@ant-design/icons-vue";
 import { cancelFollowing, follow } from "../request/friend";
 import { getLatest, getOnline, getRecommendUsers } from "../request/request";
 import { dateFormat, moment } from "../utils";
-
 export default {
   name: "rightBar",
   data() {
@@ -14,6 +20,13 @@ export default {
       latest: [],
       online: [],
     };
+  },
+  components: {
+    ClockCircleTwoTone,
+    StarTwoTone,
+    GiftTwoTone,
+    CheckSquareTwoTone,
+    DollarOutlined,
   },
   methods: {
     gotoProfileHandler(userId) {
@@ -131,11 +144,43 @@ export default {
         <div className="header">
           <span>每日任务</span>
         </div>
-        <div className="score_item" v-for="item in 10" :key="item">
-          <div className="pic"></div>
+        <div className="score_item">
+          <div className="pic"><ClockCircleTwoTone /></div>
           <div className="content">
-            <span className="title">买一送一</span>
-            <span className="des"><icon />5积分</span>
+            <span className="title">使用时长大于1min</span>
+            <span className="des"
+              ><DollarOutlined style="color: goldenrod" />40积分</span
+            >
+          </div>
+          <a-button>获取积分</a-button>
+        </div>
+        <div className="score_item">
+          <div className="pic"><StarTwoTone /></div>
+          <div className="content">
+            <span className="title">收藏商品</span>
+            <span className="des"
+              ><DollarOutlined style="color: goldenrod" />5积分</span
+            >
+          </div>
+          <a-button>获取积分</a-button>
+        </div>
+        <div className="score_item">
+          <div className="pic"><GiftTwoTone /></div>
+          <div className="content">
+            <span className="title">分享</span>
+            <span className="des"
+              ><DollarOutlined style="color: goldenrod" />5积分</span
+            >
+          </div>
+          <a-button>获取积分</a-button>
+        </div>
+        <div className="score_item">
+          <div className="pic"><CheckSquareTwoTone></CheckSquareTwoTone></div>
+          <div className="content">
+            <span className="title">签到</span>
+            <span className="des"
+              ><DollarOutlined style="color: goldenrod" />5积分</span
+            >
           </div>
           <a-button>获取积分</a-button>
         </div>
@@ -153,6 +198,8 @@ export default {
     display: flex;
     .pic {
       width: 50px;
+      height: 50px;
+      font-size: 30px;
     }
     .content {
       flex: 1;
