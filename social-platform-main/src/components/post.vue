@@ -30,8 +30,13 @@
             </div>
             <div className="content">
                 <p>{{ post.content }}</p>
-                <img :src="post.img" alt="" />
+                <img :src="post.img" alt="" />    
+                <div class="loc">
+                    <img v-if="post.location" :src="Loc" alt="Loc" />
+                    <span v-if="post.location" display:block>{{ post.location }}</span>
+                </div>            
             </div>
+            
             <div className="info">
                 <div className="item" @click="likeHandler">
                     <heart-outlined v-if="isLike" :style="{ color: 'red' }" />
@@ -69,6 +74,7 @@ import {
 import { like, cancelLike, deletePost, getAllPost, getPostByUserId } from '../request/post';
 import { addHistory } from '../request/history';
 import { star, cancelStar } from '../request/post';
+import Loc from "../assets/location.png";
 
 import { mapState } from 'vuex';
 
@@ -79,7 +85,8 @@ export default {
             openComment: false,
             likeNum: this.post.likeNum || 0,
             isLike: this.post.isLike,
-            commentNum: this.post.commentNum
+            commentNum: this.post.commentNum,
+            Loc,
         }
     },
     computed: {
@@ -253,6 +260,20 @@ export default {
                     max-height: 500px;
                     object-fit: contain;
                     margin-top: 20px;
+                }
+
+                .loc{
+                    margin-top: 5px;
+                    img {
+                        width: 22px;
+                        height: 22px;
+                        margin-right: 5px;
+                    }
+                    span{
+                        position: absolute;
+                        border: 10px;
+                        margin-top: 18px;
+                    }
                 }
             }
 
