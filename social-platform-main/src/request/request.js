@@ -4,6 +4,24 @@ export function register(inputs) {
   return instance.post("/api/auth/register", { ...inputs });
 }
 
+export function saveBusinessAPI(
+  userId,
+  name,
+  phone,
+  idCardR,
+  idCardL,
+  isPass = 1
+) {
+  return instance.post("/api/business/save", {
+    userId,
+    name,
+    phone,
+    idCardR,
+    idCardL,
+    isPass,
+  });
+}
+
 export function login(inputs) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -19,7 +37,15 @@ export function login(inputs) {
     }, 1000);
   });
 }
-
+export function isBusiness() {
+  return instance.post(
+    "/api/business/check"
+    // {},
+    // {
+    //   withCredentials: true,
+    // }
+  );
+}
 export function logout() {
   return instance.post("/api/auth/logout");
 }

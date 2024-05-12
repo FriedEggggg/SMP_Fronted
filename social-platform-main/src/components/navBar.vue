@@ -12,7 +12,7 @@ import {
   StarOutlined,
   UserOutlined,
 } from "@ant-design/icons-vue";
-import { getAllCount, logout } from "../request/request";
+import { getAllCount, isBusiness, logout } from "../request/request";
 import Notice from "./notice.vue";
 
 import { mapState } from "vuex";
@@ -25,6 +25,7 @@ export default {
       isShowDrawer: false,
       searchText: "",
       open: false,
+      Business: false,
     };
   },
   computed: {
@@ -93,6 +94,10 @@ export default {
       let count = res.data.data;
       this.$store.commit("setNotReadCount", count);
     });
+    isBusiness().then((res) => {
+      if (res.data.data === 0) this.Business = true;
+      else this.Business = false;
+    });
   },
 };
 </script>
@@ -117,7 +122,7 @@ export default {
       </div>
     </div>
     <div class="right">
-      <div class="statistics">
+      <div class="statistics" v-show="Business">
         <span @click="switchModal">注册商家</span>
       </div>
       <div class="statistics">

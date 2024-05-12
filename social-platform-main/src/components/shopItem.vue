@@ -20,7 +20,7 @@ const excCoupon = async () => {
   <div className="item">
     <div className="left">
       <img :src="props.itemData.couponImg" alt="" class="itemPic" />
-      <!-- <span className="itemName">{{ props.itemData.name }}</span> -->
+      <span className="itemName">{{ props.itemData.text }}</span>
     </div>
     <div className="right">
       <span className="itemPrice">剩余{{ props.itemData.couponNum }}</span>

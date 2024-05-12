@@ -1,6 +1,8 @@
 <script setup>
 import { reactive, ref } from "vue";
+import { useStore } from "vuex";
 import instance from "../request";
+import { saveBusinessAPI } from "../request/request";
 
 const open = ref(false);
 defineExpose({
@@ -12,7 +14,16 @@ const formState = reactive({
   name: "",
   phone: "",
 });
-const onFinish = (values) => {
+const store = useStore();
+const onFinish = async (values) => {
+  const res = await saveBusinessAPI(
+    store.state.currentUser.userId,
+    formState.name,
+    formState.phone,
+    formState.idCardR[0].response,
+    formState.idCardL[0].response
+  );
+  console.log(res);
   formState.idCardL = [];
   formState.idCardR = [];
   formState.name = "";
@@ -32,7 +43,7 @@ const customUploadL = (e) => {
     .post("http://localhost:9000/cor/smp//api/applet/upload", formData)
     .then((res) => {
       // 调用实例的成功方法通知组件该文件上传成功
-      formState.idCardL[0] = res.data.data.url;
+      //   formState.idCardL[0] = res.data.data.url;
       e.onSuccess(res.data.data.url, e);
     })
     .catch((err) => {
@@ -48,7 +59,7 @@ const customUploadR = (e) => {
     .post("http://localhost:9000/cor/smp//api/applet/upload", formData)
     .then((res) => {
       // 调用实例的成功方法通知组件该文件上传成功
-      formState.idCardR[0] = res.data.data.url;
+      //   formState.idCardR[0] = res.data.data.url;
       e.onSuccess(res.data.data.url, e);
       console.log(e);
     })
