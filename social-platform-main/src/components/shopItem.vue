@@ -1,17 +1,31 @@
 <script setup>
+import { useStore } from "vuex";
+import { excCouponAPI } from "../request/coupon";
+import store from "../store/store";
+
 const props = defineProps({
   itemData: Object,
+  getCoupon: Object,
 });
+const stroe = useStore();
+const excCoupon = async () => {
+  const res = await excCouponAPI(
+    store.state.currentUser.userId,
+    props.itemData.id
+  );
+  props.getCoupon();
+};
 </script>
 <template>
   <div className="item">
     <div className="left">
-      <img :src="props.itemData.src" alt="" class="itemPic" />
-      <span className="itemName">{{ props.itemData.name }}</span>
+      <img :src="props.itemData.couponImg" alt="" class="itemPic" />
+      <!-- <span className="itemName">{{ props.itemData.name }}</span> -->
     </div>
     <div className="right">
-      <span className="itemPrice">{{ props.itemData.itemPrice }}积分</span>
-      <button>兑换</button>
+      <span className="itemPrice">剩余{{ props.itemData.couponNum }}</span>
+      <span className="itemPrice">{{ props.itemData.couponVal }}积分</span>
+      <button @click="excCoupon">兑换</button>
     </div>
   </div>
 </template>

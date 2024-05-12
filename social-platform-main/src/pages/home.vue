@@ -2,7 +2,6 @@
   <div class="home">
     <share />
     <posts />
-    <div class="home_score">test</div>
   </div>
 </template>
 

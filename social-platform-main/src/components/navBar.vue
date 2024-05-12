@@ -16,6 +16,7 @@ import { getAllCount, logout } from "../request/request";
 import Notice from "./notice.vue";
 
 import { mapState } from "vuex";
+import Merchant from "./merchant.vue";
 
 export default {
   name: "navBar",
@@ -44,6 +45,7 @@ export default {
     BellOutlined,
     ExportOutlined,
     Notice,
+    Merchant,
     StarOutlined,
     BarChartOutlined,
   },
@@ -81,7 +83,11 @@ export default {
     gotoStarHandler() {
       this.$router.push(`/star`);
     },
+    switchModal() {
+      this.$refs.Merc.switch();
+    },
   },
+
   mounted() {
     getAllCount().then((res) => {
       let count = res.data.data;
@@ -91,18 +97,9 @@ export default {
 };
 </script>
 <template>
-  <a-modal v-model:visible="open" title="Basic Modal">
-    <p>Some contents...</p>
-    <p>Some contents...</p>
-    <p>Some contents...</p>
-  </a-modal>
   <div class="nav-bar">
     <div class="left">
-      <a-modal v-model:visible="open" title="Basic Modal">
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-      </a-modal>
+      <Merchant ref="Merc"></Merchant>
       <router-link to="/">
         <span>Our Social</span>
       </router-link>
@@ -121,7 +118,7 @@ export default {
     </div>
     <div class="right">
       <div class="statistics">
-        <span @click="toggleModal">注册商家</span>
+        <span @click="switchModal">注册商家</span>
       </div>
       <div class="statistics">
         <router-link to="/statistics">
