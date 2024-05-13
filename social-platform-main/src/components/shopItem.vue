@@ -21,7 +21,6 @@ const excCoupon = async () => {
 };
 </script>
 <template>
-  <context-holder />
   <div>
     <a-card bordered hoverable style="width: 240px; position: relative">
       <span style="position: absolute; bottom: 1px; right: 1px"
