@@ -65,7 +65,7 @@ import Loc from "../assets/location.png";
 import { upload } from '../request/request';
 import { share, getAllPost } from "../request/post";
 import mapModal from './mapModal.vue';
-import friendModal from './friendExample.vue';
+import friendModal from './friendModal.vue';
 import { mapState } from 'vuex';
 
 export default {
