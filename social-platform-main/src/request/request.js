@@ -62,6 +62,13 @@ export function upload(formData) {
   return instance.post("/api/applet/upload", formData);
 }
 
+export function signinAPI(userId) {
+  return instance.post(`/api/integarl/signin?userId=${userId}`);
+}
+
+export function browseinAPI() {
+  return instance.post("/api/integarl/browsein");
+}
 export function search(query) {
   return instance.get("/api/search", {
     params: {

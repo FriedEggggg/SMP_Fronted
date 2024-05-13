@@ -1,6 +1,11 @@
 <template>
   <div className="shop">
-    <div v-if="Business" class="header">
+    <div class="header">
+      <div>
+        当前积分:<DollarOutlined style="color: goldenrod" />{{
+          store.state.currentUser.integral
+        }}点
+      </div>
       <a-button
         class="newBotton"
         @click="
@@ -74,7 +79,9 @@
       </a-form>
     </a-modal>
     <div className="itemList">
-      <ul>
+      <ul
+        style="display: grid; grid-template-columns: 30% 30% 30%; grid-gap: 3%"
+      >
         <li v-for="item in itemData">
           <shopItemVue :getCoupon="getCoupon" :itemData="item" />
         </li>
@@ -90,6 +97,8 @@
 </template>
 
 <script setup>
+import { DollarOutlined } from "@ant-design/icons-vue";
+import { message } from "ant-design-vue";
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
 import shopItemVue from "../components/shopItem.vue";
@@ -128,6 +137,9 @@ const onFinish = async (values) => {
     formState.fileList[0].response,
     formState.val
   );
+  if (res.data.data == 1) {
+    message.info("添加成功");
+  }
   formState.num = 0;
   formState.val = 0;
   formState.fileList = [];
@@ -167,9 +179,10 @@ onMounted(async () => {
 
 .shop {
   .header {
+    height: 50px;
     padding-top: 10px;
     display: flex;
-    flex-direction: row-reverse;
+    justify-content: space-between;
   }
   @include themify($themes) {
     // -webkit-box-shadow: -14px 8px 55px -27px rgba(0, 0, 0, 0.37);
