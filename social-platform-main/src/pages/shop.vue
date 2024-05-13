@@ -1,6 +1,11 @@
 <template>
   <div className="shop">
     <div class="header">
+      <div>
+        当前积分:<DollarOutlined style="color: goldenrod" />{{
+          store.state.currentUser.integral
+        }}点
+      </div>
       <a-button
         class="newBotton"
         @click="
@@ -12,7 +17,6 @@
       >
     </div>
     <a-modal v-model:visible="open" footer="" title="新增优惠卷">
-      <footer></footer>
       <a-form
         :model="formState"
         name="basic"
@@ -75,21 +79,33 @@
       </a-form>
     </a-modal>
     <div className="itemList">
-      <ul>
+      <ul
+        style="display: grid; grid-template-columns: 30% 30% 30%; grid-gap: 3%"
+      >
         <li v-for="item in itemData">
           <shopItemVue :getCoupon="getCoupon" :itemData="item" />
         </li>
       </ul>
+      <div
+        v-if="itemData.length === 0"
+        style="display: flex; align-items: center; justify-content: center"
+      >
+        暂无可兑换的优惠卷
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { DollarOutlined } from "@ant-design/icons-vue";
+import { message } from "ant-design-vue";
 import { onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
 import shopItemVue from "../components/shopItem.vue";
 import instance from "../request";
 import { getCouponAPI, saveCouponAPI } from "../request/coupon";
+import { isBusiness } from "../request/request";
+const Business = ref(false);
 const formState = reactive({
   desc: "",
   val: 0,
@@ -113,31 +129,17 @@ const customUpload = (e) => {
     });
 };
 
-const getSuccessFileUrls = (list) => {
-  let urls = [];
-  list.forEach((item) => {
-    // 获取上传成功的文件数据
-    if (item.status === "done" && item.response) {
-      // urls.push(item.response.url); //改为你想获取的数据格式
-      console.log("test", item.response);
-    }
-  });
-  return urls;
-};
-const onSubmit = () => {
-  // const urls = getSuccessFileUrls(formState.fileList);
-  console.log(formState.fileList);
-  console.log(urls);
-};
-
 const onFinish = async (values) => {
   let res = await saveCouponAPI(
     store.state.currentUser.userId,
     formState.desc,
     formState.num,
-    formState.fileList[0],
+    formState.fileList[0].response,
     formState.val
   );
+  if (res.data.data == 1) {
+    message.info("添加成功");
+  }
   formState.num = 0;
   formState.val = 0;
   formState.fileList = [];
@@ -152,26 +154,24 @@ const onFinishFailed = (errorInfo) => {
 const store = useStore();
 const open = ref(false);
 const itemData = ref([
-  {
-    id: 1,
-    userId: 2,
-    couponNum: 5,
-    couponImg: "http://dummyimage.com/400x400",
-    couponVal: 1,
-  },
+  // {
+  //   id: null,
+  //   userId: null,
+  //   couponNum: 5,
+  //   couponImg: "http://dummyimage.com/400x400",
+  //   couponVal: 1,
+  // },
 ]);
 const getCoupon = async () => {
   const res = await getCouponAPI(store.state.currentUser.userId);
   itemData.value = res.data.data;
 };
 
-function handlePreview(file) {
-  previewImage = file.url || file.thumbUrl;
-  previewVisible = true;
-}
-
-onMounted(() => {
+onMounted(async () => {
   getCoupon();
+  const res = await isBusiness();
+  if (res.data.data === 1) Business.value = true;
+  else Business.value = false;
 });
 </script>
 <style lang="scss">
@@ -179,8 +179,10 @@ onMounted(() => {
 
 .shop {
   .header {
+    height: 50px;
+    padding-top: 10px;
     display: flex;
-    flex-direction: row-reverse;
+    justify-content: space-between;
   }
   @include themify($themes) {
     // -webkit-box-shadow: -14px 8px 55px -27px rgba(0, 0, 0, 0.37);

@@ -1,4 +1,5 @@
 <script setup>
+import { message } from "ant-design-vue";
 import { useStore } from "vuex";
 import { excCouponAPI } from "../request/coupon";
 import store from "../store/store";
@@ -13,20 +14,37 @@ const excCoupon = async () => {
     store.state.currentUser.userId,
     props.itemData.id
   );
+  if (res.data.data == 1) {
+    message.info("兑换成功");
+  }
   props.getCoupon();
 };
 </script>
 <template>
-  <div className="item">
-    <div className="left">
-      <img :src="props.itemData.couponImg" alt="" class="itemPic" />
-      <!-- <span className="itemName">{{ props.itemData.name }}</span> -->
-    </div>
-    <div className="right">
-      <span className="itemPrice">剩余{{ props.itemData.couponNum }}</span>
-      <span className="itemPrice">{{ props.itemData.couponVal }}积分</span>
-      <button @click="excCoupon">兑换</button>
-    </div>
+  <context-holder />
+  <div>
+    <a-card bordered hoverable style="width: 240px; position: relative">
+      <span style="position: absolute; bottom: 1px; right: 1px"
+        >还剩最后{{ props.itemData.couponNum }}个</span
+      >
+      <template #cover>
+        <img
+          alt="example"
+          style="height: 200px"
+          :src="props.itemData.couponImg"
+        />
+      </template>
+      <a-card-meta :title="props.itemData.text">
+        <template #description
+          ><div>
+            <span style="color: red">{{ props.itemData.couponVal }}点</span>
+          </div>
+          <div style="margin-top: 10px">
+            <a-button @click="excCoupon">兑换</a-button>
+          </div></template
+        >
+      </a-card-meta>
+    </a-card>
   </div>
 </template>
 

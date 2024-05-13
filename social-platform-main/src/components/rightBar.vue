@@ -6,8 +6,16 @@ import {
   GiftTwoTone,
   StarTwoTone,
 } from "@ant-design/icons-vue";
+import { message } from "ant-design-vue";
 import { cancelFollowing, follow } from "../request/friend";
-import { getLatest, getOnline, getRecommendUsers } from "../request/request";
+import {
+  browseinAPI,
+  getLatest,
+  getOnline,
+  getRecommendUsers,
+  signinAPI,
+} from "../request/request";
+import store from "../store/store";
 import { dateFormat, moment } from "../utils";
 export default {
   name: "rightBar",
@@ -19,6 +27,7 @@ export default {
       recommendUsers: [],
       latest: [],
       online: [],
+      inTime: new Date(),
     };
   },
   components: {
@@ -43,6 +52,25 @@ export default {
       cancelFollowing(user.userId).then(() => {
         user.isFollowed = false;
       });
+    },
+    async signin() {
+      try {
+        const res = await signinAPI(store.state.currentUser.userId);
+        console.log(res);
+      } catch (error) {
+        message.info(error.response.data);
+      }
+    },
+    async timeGet() {
+      try {
+        if (new Date() - this.inTime > 1000 * 60 * 10) {
+          const res = await browseinAPI();
+        } else {
+          message.info("登录未满10min");
+        }
+      } catch (error) {
+        message.info(error.response.data);
+      }
     },
   },
   mounted() {
@@ -147,22 +175,22 @@ export default {
         <div className="score_item">
           <div className="pic"><ClockCircleTwoTone /></div>
           <div className="content">
-            <span className="title">使用时长大于1min</span>
+            <span className="title">签到</span>
             <span className="des"
               ><DollarOutlined style="color: goldenrod" />40积分</span
             >
           </div>
-          <a-button>获取积分</a-button>
+          <a-button @click="signin">获取积分</a-button>
         </div>
         <div className="score_item">
           <div className="pic"><StarTwoTone /></div>
           <div className="content">
-            <span className="title">收藏商品</span>
+            <span className="title">浏览10分钟</span>
             <span className="des"
               ><DollarOutlined style="color: goldenrod" />5积分</span
             >
           </div>
-          <a-button>获取积分</a-button>
+          <a-button @click="timeGet">获取积分</a-button>
         </div>
         <div className="score_item">
           <div className="pic"><GiftTwoTone /></div>

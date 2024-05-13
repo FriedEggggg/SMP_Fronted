@@ -4,13 +4,11 @@ export function saveCouponAPI(userId, text, couponNum, couponImg, couponVal) {
   return instance.post(
     "/api/coupon/save",
     {
-      params: {
-        userId,
-        text,
-        couponNum,
-        couponImg,
-        couponVal,
-      },
+      userId,
+      text,
+      couponNum,
+      couponImg,
+      couponVal,
     },
     {
       withCredentials: true,
