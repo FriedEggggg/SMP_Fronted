@@ -8,6 +8,7 @@
       </div>
       <a-button
         class="newBotton"
+        v-if="Business"
         @click="
           () => {
             open = !open;
@@ -170,8 +171,8 @@ const getCoupon = async () => {
 onMounted(async () => {
   getCoupon();
   const res = await isBusiness();
-  if (res.data.data === 1) Business.value = true;
-  else Business.value = false;
+  if (res.data.data === 0) Business.value = false;
+  else Business.value = true;
 });
 </script>
 <style lang="scss">
