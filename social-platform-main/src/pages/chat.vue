@@ -27,9 +27,12 @@
                             <div class="img-container" @click="() => gotoProfileHandler(item.userId)">
                                 <img :src="item.userId === userId ? profilePic : currentUser.profilePic">
                             </div>
-                            <p class="content">
+                            <p class="content" v-if="!shareObjectMes[item.id]">
                                 {{ item.content }}
                             </p>
+                            <a-card v-else size="small" :title="shareObjectMes[item.id].name" style="width: 200px">
+                                <a @click="gotoShare(shareObjectMes[item.id])">{{ shareObjectMes[item.id].content }}</a>
+                            </a-card>
                         </div>
                     </div>
                 </div>
@@ -67,6 +70,7 @@ import {
 } from '@ant-design/icons-vue';
 
 import { mapState } from 'vuex';
+import { getSinglePost } from '../request/post';
 
 export default {
     data() {
@@ -77,7 +81,8 @@ export default {
             userId: "",
             message: "",
             timer: null,
-            isToBottom: false
+            isToBottom: false,
+            shareObjectMes:{}
         }
     },
     computed: {
@@ -105,14 +110,18 @@ export default {
         }
     },
     methods: {
-        getList(userId) {
-            getChat(userId).then(res => {
+        gotoShare(data){
+            this.$router.push({path:"/",query:{sharePost:JSON.stringify(data)}});
+        },
+        async getList(userId) {
+            getChat(userId).then(async res => {
                 this.list = res.data.data;
                 this.userId = parseInt(userId);
 
                 // 计算是否显示时间提示
                 let lastTime = "";
-                this.list.forEach((item, index) => {
+                for (let index = 0; index < this.list.length; index++) {
+                    const item = this.list[index];
                     if (index === 0) {
                         item.hint = moment(item.time).fromNow();
                     }
@@ -124,8 +133,20 @@ export default {
                     }
 
                     lastTime = item.time;
-                })
-
+                    
+                    //解析分享内容
+                    if(item.content.startsWith('$%^&*??share---')){
+                        let postId = parseInt(item.content.split('$%^&*??share---')[1])
+                        if(!this.shareObjectMes[item.id]){
+                            let postDatares = await getSinglePost(postId)
+                            if(postDatares.data.code==1){
+                                this.shareObjectMes[item.id] = postDatares.data.data
+                            }
+                            
+                        }
+                    }
+                    
+                }
                 return getProfileData(userId);
             }).then(res => {
                 const data = res.data.data;
@@ -144,14 +165,15 @@ export default {
             })
         },
         async redo() {
-            return getChat(this.userId).then(res => {
+            return getChat(this.userId).then(async res => {
                 this.list = res.data.data;
                 const listDOM = this.$refs.list;
                 if (parseInt(listDOM.scrollHeight) - 2 <= parseInt(listDOM.scrollTop) + parseInt(listDOM.clientHeight)) this.isToBottom = true;
 
                 // 计算是否显示时间提示
                 let lastTime = "";
-                this.list.forEach((item, index) => {
+                for (let index = 0; index < this.list.length; index++) {
+                    const item = this.list[index];
                     if (index === 0) {
                         item.hint = moment(item.time).fromNow();
                     }
@@ -163,7 +185,20 @@ export default {
                     }
 
                     lastTime = item.time;
-                })
+
+                    //解析分享内容
+                    if(item.content.startsWith('$%^&*??share---')){
+                        let postId = parseInt(item.content.split('$%^&*??share---')[1])
+                        if(!this.shareObjectMes[item.id]){
+                            await getSinglePost(postId).then(({data})=>{
+                                if(data.code==1){
+                                    this.shareObjectMes[item.id] = data.data
+                                }
+                            })
+                        }
+                    }
+                    
+                }
             }).then(() => {
                 const listDOM = this.$refs.list;
                 if (this.isToBottom) listDOM.scrollTo(0, listDOM.scrollHeight);
