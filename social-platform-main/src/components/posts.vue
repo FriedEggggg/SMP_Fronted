@@ -49,7 +49,7 @@ export default {
     },
     mounted() {
         let sharePost = this.$route.query.sharePost
-
+        
         if(sharePost&&sharePost.trim()!=""){
             store.commit("setHomePosts", [JSON.parse(sharePost)]);
             this.isLoading = false;
