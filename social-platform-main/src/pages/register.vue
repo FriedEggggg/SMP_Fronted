@@ -18,6 +18,26 @@
                     <input type="email" placeholder='电子邮箱' name='email' v-model="inputs.email" />
                     <input type="password" placeholder="密码" name='password' v-model="inputs.password" />
                     <input type="text" placeholder='昵称' name='nickname' v-model="inputs.nickname" />
+                    <!-- <input type="text" placeholder='MBTI' name='mbti' v-model="this.personality" /> -->
+                    <a-select v-model="this.personality">
+                            <!-- "formState.personality" -->
+                            <option value="INTJ">INTJ</option>
+                            <option value="INTP">INTP</option>
+                            <option value="ENTJ">ENTJ</option>
+                            <option value="ENTP">ENTP</option>
+                            <option value="INFJ">INFJ</option>
+                            <option value="INFP">INFP</option>
+                            <option value="ENFJ">ENFJ</option>
+                            <option value="ENFP">ENFP</option>
+                            <option value="ISTJ">ISTJ</option>
+                            <option value="ISFJ">ISFJ</option>
+                            <option value="ESTJ">ESTJ</option>
+                            <option value="ESFJ">ESFJ</option>
+                            <option value="ISTP">ISTP</option>
+                            <option value="ISFP">ISFP</option>
+                            <option value="ESTP">ESTP</option>
+                            <option value="ESFP">ESFP</option>
+                        </a-select>
                     <a-button type="primary" :loading="isLoading" @click="registerHandler">注册</a-button>
                     <p v-if="err" class="err">
                         {{ err }}
@@ -30,6 +50,7 @@
 
 <script>
 import { register } from '../request/request'
+import { getProfileData3 } from '../request/profile';
 export default {
     name: 'register',
     data() {
@@ -39,9 +60,11 @@ export default {
                 email: '',
                 password: '',
                 nickname: '',
+                roleId:0
             },
             isLoading: false,
-            err: ''
+            err: '',
+            personality:'',
         }
     },
     methods: {
@@ -58,7 +81,9 @@ export default {
                 this.err = res;
             }
         },
-        checkInputs() {
+        async checkInputs() {
+            const res = await getProfileData3(this.personality);
+            this.inputs.roleId = res.data.data;
             const inputs = this.inputs;
             for (let key in inputs) {
                 if (inputs[key] === "") {
