@@ -40,7 +40,7 @@
                 <Posts :userId="userId" />
             </div>
         </div>
-        <a-modal v-model:visible="isOpenUpdate" :style="{ width: `800px` }" :footer="null">
+        <a-modal :visible="isOpenUpdate" :style="{ width: `800px` }" :footer="null">
             <update :user="{ ...user }" :setOpenUpdate="setOpenUpdate" :updateUser="updateUser" />
         </a-modal>
     </div>

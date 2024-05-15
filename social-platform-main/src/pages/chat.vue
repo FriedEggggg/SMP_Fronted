@@ -31,7 +31,7 @@
                                 {{ item.content }}
                             </p>
                             <a-card v-else size="small" :title="shareObjectMes[item.id].name" style="width: 200px">
-                                <a @click="gotoShare(shareObjectMes[item.id])">{{ shareObjectMes[item.id].content }}</a>
+                                <a @click="gotoShare(shareObjectMes[item.id])"><span style="overflow: hidden;text-overflow:ellipsis;white-space: nowrap;display: inline-block;width: 100%;">{{ shareObjectMes[item.id].content }}</span></a>
                             </a-card>
                         </div>
                     </div>
