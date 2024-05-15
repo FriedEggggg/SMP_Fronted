@@ -3,13 +3,22 @@
         <div class='card'>
             <div class='left'>
                 <h1>Hello World.</h1>
-                <p>
+                <!-- <p>
                     生活封锁了我们，只要我们的心不死，生活便永远不是一汪死水，而我们，依然会绽放最美的姿态。
-                </p>
-                <span>还没有账号？</span>
-                <router-link to='/login'>
-                    <button>登录</button>
-                </router-link>
+                </p> -->
+                <span style="padding: 0px;">不知道自己的MBTI类型？
+                    <a href='https://www.16personalities.com/ch'>点击测试</a>
+                </span>
+                <div>
+                    <span style="position: absolute">或扫码测试</span>
+                    <span>
+                        <img :src="testPic" style="padding-left:100px;padding-top:0;height:150px;width:250px">
+                    </span>
+                </div>
+                    <router-link to='/login'>
+                            <button>返回登录</button>
+                        </router-link>
+                
             </div>
             <div class="right">
                 <h1>注册</h1>
@@ -19,7 +28,7 @@
                     <input type="password" placeholder="密码" name='password' v-model="inputs.password" />
                     <input type="text" placeholder='昵称' name='nickname' v-model="inputs.nickname" />
                     <!-- <input type="text" placeholder='MBTI' name='mbti' v-model="this.personality" /> -->
-                    <a-select v-model="this.personality">
+                    <a-select v-model:value="this.personality">
                             <!-- "formState.personality" -->
                             <option value="INTJ">INTJ</option>
                             <option value="INTP">INTP</option>
@@ -50,7 +59,6 @@
 
 <script>
 import { register } from '../request/request'
-import { getProfileData3 } from '../request/profile';
 export default {
     name: 'register',
     data() {
@@ -65,6 +73,7 @@ export default {
             isLoading: false,
             err: '',
             personality:'',
+            testPic:'http://8.137.16.7:9000/youmore/452d7d2c-2629-41e7-a825-25d41884da49.png'
         }
     },
     methods: {
@@ -81,10 +90,48 @@ export default {
                 this.err = res;
             }
         },
+        async Change(){
+            if(this.personality == 'INTJ'){
+                this.inputs.roleId = 1;
+            }else if(this.personality == 'INTP'){
+                this.inputs.roleId = 2;
+            }else if (this.personality == 'ENTJ') {
+                this.inputs.roleId = 3;
+            } else if (this.personality == 'ENTP') {
+                this.inputs.roleId = 4;
+            } else if (this.personality == 'INFJ') {
+                this.inputs.roleId = 5;
+            } else if (this.personality == 'INFP') {
+                this.inputs.roleId = 6;
+            } else if (this.personality == 'ENFJ') {
+                this.inputs.roleId = 7;
+            } else if (this.personality == 'ENFP') {
+                this.inputs.roleId = 8;
+            } else if (this.personality == 'ISTJ') {
+                this.inputs.roleId = 9;
+            } else if (this.personality == 'ISFJ') {
+                this.inputs.roleId = 10;
+            } else if (this.personality == 'ESTJ') {
+                this.inputs.roleId = 11;
+            } else if (this.personality == 'ESFJ') {
+                this.inputs.roleId = 12;
+            } else if (this.personality == 'ISTP') {
+                this.inputs.roleId = 13;
+            } else if (this.personality == 'ISFP') {
+                this.inputs.roleId = 14;
+            } else if (this.personality == 'ESTP') {
+                this.inputs.roleId = 15;
+            } else if (this.personality == 'ESFP') {
+                this.inputs.roleId = 16;
+            } else {
+                this.inputs.roleId = 0;
+            }
+            console.log(this.inputs.roleId);
+        },
         async checkInputs() {
-            const res = await getProfileData3(this.personality);
-            this.inputs.roleId = res.data.data;
+            await this.Change();
             const inputs = this.inputs;
+            console.log(inputs);
             for (let key in inputs) {
                 if (inputs[key] === "") {
                     this.err = "The form has blank space";
