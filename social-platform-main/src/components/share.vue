@@ -64,6 +64,7 @@ import { share, getAllPost } from "../request/post";
 import mapModal from './mapModal.vue';
 import atFriend from "./atFriend.vue";
 import { mapState } from 'vuex';
+import { sendMessage } from '../request/chat';
 
 export default {
     name: 'share',
@@ -114,7 +115,14 @@ export default {
             await share(formData);
             res = await getAllPost();
             this.$store.commit("setHomePosts", res.data.data);
+            if( this.friendId!=0 ){
+                this.atFriendbyId(this.friendId)
+            }
             this.clear()
+        },
+        async atFriendbyId(id) {
+            let {data} = await sendMessage(id,"提到了你: @"+this.friendName)
+            if(data.code==1)console.log("at成功");
         },
         clear(){
             this.content = ""

@@ -177,7 +177,7 @@ export default {
           <div className="content">
             <span className="title">签到</span>
             <span className="des"
-              ><DollarOutlined style="color: goldenrod" />40积分</span
+              ><DollarOutlined style="color: goldenrod" />2积分</span
             >
           </div>
           <a-button @click="signin">获取积分</a-button>
@@ -187,7 +187,7 @@ export default {
           <div className="content">
             <span className="title">浏览10分钟</span>
             <span className="des"
-              ><DollarOutlined style="color: goldenrod" />5积分</span
+              ><DollarOutlined style="color: goldenrod" />2积分</span
             >
           </div>
           <a-button @click="timeGet">获取积分</a-button>
@@ -197,7 +197,7 @@ export default {
           <div className="content">
             <span className="title">分享</span>
             <span className="des"
-              ><DollarOutlined style="color: goldenrod" />5积分</span
+              ><DollarOutlined style="color: goldenrod" />3积分</span
             >
           </div>
           <a-button>获取积分</a-button>
@@ -205,9 +205,9 @@ export default {
         <div className="score_item">
           <div className="pic"><CheckSquareTwoTone></CheckSquareTwoTone></div>
           <div className="content">
-            <span className="title">签到</span>
+            <span className="title">发帖</span>
             <span className="des"
-              ><DollarOutlined style="color: goldenrod" />5积分</span
+              ><DollarOutlined style="color: goldenrod" />2积分</span
             >
           </div>
           <a-button>获取积分</a-button>
