@@ -26,6 +26,15 @@
                                 <i className="iconfont">&#xe654;</i>
                                 <span>{{ user.userLang }}</span>
                             </div>
+                            <div className="item">
+                                <a-button @click="getMessage">{{ this.personality }}</a-button>
+                                <mesModal :visible.sync="showModal" @masModal="closeModal">
+                                    <h2>{{ this.personality }}</h2>
+                                    <div style="float: left; width: 55%;">{{ this.message }}</div>
+                                    <div> <img :src="mbtiPic" style="float: left; width: 45%;height: 50%;"></div>
+                                    <!-- <img :src="getsMbtiPic"> -->
+                                </mesModal>
+                            </div>
                         </div>
                         <button v-if="isShowUpdateForm" @click="() => setOpenUpdate(true)">更新</button>
                         <button v-else-if="user.isFollowed" @click="cancelFollowingHandler">已关注</button>
@@ -62,9 +71,9 @@ import Posts from '../components/posts.vue';
 import { getProfileData } from '../request/profile';
 import Update from '../components/update.vue';
 import { follow, cancelFollowing } from '../request/friend';
-
-import { mapState } from 'vuex';
-
+import { getProfileData2, getProfileData4 } from '../request/profile';
+import { getmbtiPic } from '../request/profile';
+import mesModal from './mesModal.vue';
 export default {
     name: 'profile',
     data() {
@@ -73,7 +82,11 @@ export default {
             user: {},
             userId: null,
             err: "",
-            isOpenUpdate: false
+            isOpenUpdate: false,
+            personality: null,
+            message: null,
+            showModal: false,
+            mbtiPic: null
         }
     },
     components: {
@@ -85,7 +98,9 @@ export default {
         WeiboCircleFilled,
         MessageOutlined,
         loadingMark,
-        Update
+        Update,
+        mesModal
+
     },
     computed: {
         isShowUpdateForm() {
@@ -108,6 +123,8 @@ export default {
                         if (code == 1) {
                             console.log("user",res.data);
                             this.user = data;
+                            this.ChangeId();
+                            this.getsMbtiPic();
                         } else {
                             this.err = "获取数据失败";
                         }
@@ -119,8 +136,30 @@ export default {
         }
     },
     methods: {
+        async getsMbtiPic() {
+            try {
+                const res = await getmbtiPic(this.user.roleId);
+                console.log(res.data.data);
+                // 在这里处理response，例如解析JSON数据  
+                this.mbtiPic = res.data.data;
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+            }
+        },
+        async ChangeId() {
+            try {
+                console.log(this.user.roleId)
+                const res = await getProfileData2(this.user.roleId);
+                // 在这里处理response，例如解析JSON数据  
+                this.personality = res.data.data;
+                console.log(this.personality); // 打印从服务器获取的数据  
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+            }
+        },
         setOpenUpdate(value) {
             this.isOpenUpdate = value;
+            this.ChangeId();
         },
         updateUser(user) {
             this.user = user;
@@ -138,6 +177,19 @@ export default {
         },
         gotoChatHandler() {
             this.$router.push(`/chat/${this.user.userId}`)
+        },
+        closeModal(data) {
+            this.showModal = data
+        },
+        async getMessage() {
+            console.log(this.user.roleId);
+            const res = await getProfileData4(this.user.roleId);
+            //console.log(this.user.roleId);
+            // 在这里处理response，例如解析JSON数据  
+            this.message = res.data.data;
+            //console.log(this.message); // 打印从服务器获取的数据  
+            this.showModal = true
+            this.getsMbtiPic();
         }
     },
     mounted(){

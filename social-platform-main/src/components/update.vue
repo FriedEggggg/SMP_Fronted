@@ -18,6 +18,7 @@
                 </label>
                 <input type="file" id="profile" :style="{ display: `none` }" @change="(e) => profile = e.target.files[0]" />
             </div>
+
             <a-form :model="formState" :label-col="{ span: 4 }" :wrapper-col="{ span: 12 }" @finish="finishHandler">
                 <a-form-item label="昵称">
                     <a-input v-model:value="formState.nickname" />
@@ -34,6 +35,28 @@
                 <a-form-item label="语言类型">
                     <a-input v-model:value="formState.userLang" />
                 </a-form-item>
+
+                <a-form-item label="人格标签">
+                    <a-select v-model:value="this.personality">
+                        <!-- "formState.personality" -->
+                        <option value="INTJ">INTJ</option>
+                        <option value="INTP">INTP</option>
+                        <option value="ENTJ">ENTJ</option>
+                        <option value="ENTP">ENTP</option>
+                        <option value="INFJ">INFJ</option>
+                        <option value="INFP">INFP</option>
+                        <option value="ENFJ">ENFJ</option>
+                        <option value="ENFP">ENFP</option>
+                        <option value="ISTJ">ISTJ</option>
+                        <option value="ISFJ">ISFJ</option>
+                        <option value="ESTJ">ESTJ</option>
+                        <option value="ESFJ">ESFJ</option>
+                        <option value="ISTP">ISTP</option>
+                        <option value="ISFP">ISFP</option>
+                        <option value="ESTP">ESTP</option>
+                        <option value="ESFP">ESFP</option>
+                    </a-select>
+                </a-form-item>
                 <a-form-item>
                     <div class="btn">
                         <a-button type="primary" htmlType="submit">
@@ -49,7 +72,7 @@
 <script>
 import { upload } from "../request/request";
 import { updateProfile, getProfileData } from '../request/profile';
-
+import { getProfileData2, getProfileData3 } from '../request/profile';
 export default {
     props: ["setOpenUpdate", "user", "updateUser"],
     data() {
@@ -59,7 +82,11 @@ export default {
             },
             cover: null,
             profile: null,
+            personality: null
         }
+    },
+    mounted() {
+        this.ChangeId() // 在mounted中调用方法
     },
     computed: {
         computedCover() {
@@ -70,8 +97,18 @@ export default {
         }
     },
     methods: {
+        async ChangeId() {
+            try {
+                //console.log(this.user.roleId)
+                const res = await getProfileData2(this.user.roleId);
+                // 在这里处理response，例如解析JSON数据  
+                this.personality = res.data.data;
+                //console.log(this.personality); // 打印从服务器获取的数据  
+            } catch (error) {
+                console.error('Error fetching profile data:', error);
+            }
+        },
         async finishHandler() {
-
             let coverUrl = this.computedCover;
             let profileUrl = this.computedProfile;
 
@@ -89,16 +126,20 @@ export default {
                 profileUrl = res.data.data.url;
             }
 
+            const res = await getProfileData3(this.personality);
+            this.formState.roleId = res.data.data;
             this.formState.coverPic = coverUrl;
             this.formState.profilePic = profileUrl;
-
+            console.log(this.formState);
             updateProfile(this.formState).then(async () => {
                 const res = await getProfileData(this.user.userId);
                 this.updateUser(res.data.data);
                 this.$store.commit('curUserUpdate', res.data.data);
                 this.setOpenUpdate(false);
             })
+
         }
+
     }
 }
 
