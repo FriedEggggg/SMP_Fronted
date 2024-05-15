@@ -8,6 +8,7 @@ import {
 } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import { cancelFollowing, follow } from "../request/friend";
+import { getProfileData2 } from '../request/profile';
 import {
   browseinAPI,
   getLatest,
@@ -28,6 +29,8 @@ export default {
       latest: [],
       online: [],
       inTime: new Date(),
+      personality:null,
+      roleId:[],
     };
   },
   components: {
@@ -38,6 +41,18 @@ export default {
     DollarOutlined,
   },
   methods: {
+    async ChangeId(roleId) {
+      try {
+        //console.log(this.user.roleId)
+        const res = await getProfileData2(roleId);
+        // 在这里处理response，例如解析JSON数据  
+        console.log(res.data.data);
+        return res.data.data;
+        //console.log(this.personality); // 打印从服务器获取的数据  
+      } catch (error) {
+        console.error('Error fetching profile data:', error);
+      }
+    },
     gotoProfileHandler(userId) {
       this.$router.push(`/profile/${userId}`).then(() => {
         window.scrollTo(0, 0);
@@ -73,9 +88,21 @@ export default {
       }
     },
   },
-  mounted() {
-    getRecommendUsers().then((res) => {
+   async mounted() {
+    await getRecommendUsers().then((res) => {
       this.recommendUsers = res.data.data;
+      console.log(this.recommendUsers);
+      this.personality = new FormData()
+      this.recommendUsers.forEach(async item =>{
+        //console.log(item.roleId)
+        if(item.roleId == 0){
+          this.personality.set(item.roleId, " ")
+          //console.log(this.personality.get(item.roleId));
+        }
+        else{
+         this.personality.set(item.roleId, await this.ChangeId(item.roleId))}
+         //console.log(this.personality.get(item.roleId));
+      })
       this.recommendIsLoading = false;
     });
 
@@ -114,6 +141,8 @@ export default {
             <span class="name" @click="() => gotoProfileHandler(user.userId)">{{
               user.nickname
             }}</span>
+            
+            <span class="personality" >{{ this.personality.get(user.roleId) }}</span>
             <span class="location">{{ user.location }}</span>
             <span class="language">{{ user.language }}</span>
             <p class="reason">
@@ -342,7 +371,8 @@ export default {
             }
 
             .location,
-            .language {
+            .language,
+            .personality {
               color: #999;
               font-size: 13px;
             }
