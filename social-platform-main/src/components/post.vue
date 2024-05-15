@@ -30,6 +30,7 @@
             </div>
             <div className="content">
                 <p>{{ post.content }}</p>
+                <span v-if="post.friendId!=0">@{{ friendName }}</span>
                 <img :src="post.img" alt="" />    
                 <div class="loc">
                     <img v-if="post.location" :src="Loc" alt="Loc" />
@@ -75,7 +76,7 @@ import { like, cancelLike, deletePost, getAllPost, getPostByUserId } from '../re
 import { addHistory } from '../request/history';
 import { star, cancelStar } from '../request/post';
 import Loc from "../assets/location.png";
-
+import { getProfileData } from '../request/profile';
 import { mapState } from 'vuex';
 
 export default {
@@ -87,6 +88,8 @@ export default {
             isLike: this.post.isLike,
             commentNum: this.post.commentNum,
             Loc,
+            friendInfo: "",
+            friendName: ""
         }
     },
     computed: {
@@ -94,6 +97,17 @@ export default {
             currentUser: state => state.currentUser
         })
     },
+    async created() {  
+        if (this.post.friendId !== 0) {  
+            try {  
+                this.friendInfo = await getProfileData(this.post.friendId);   
+                this.friendName = this.friendInfo.data.data.nickname
+                console.log(this.friendInfo);  
+            } catch (error) {  
+                console.error('Error fetching friend info:', error);  
+            }  
+        }  
+    },  
     methods: {
         likeHandler() {
             if (this.isLike) {
@@ -152,8 +166,7 @@ export default {
                 }
             });
         });
-
-        observer.observe(this.$refs.post);
+        observer.observe(this.$refs.post);        
     },
 }
 </script>

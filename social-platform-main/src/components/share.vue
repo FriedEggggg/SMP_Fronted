@@ -6,6 +6,9 @@
                     <img :src="currentUser.profilePic" alt="" />
                     <input type="text" :placeholder="`${currentUser.nickname}, 你有什么新鲜事?`" v-model="content" />
                 </div>
+                <div class="at" style="margin-right: 10px;">
+                    <span v-if="friendName">@{{ friendName }}</span>
+                </div>
                 <div className="right">
                     <img v-if="imageUrl" className="file" alt="file" :src="imageUrl" />
                 </div>
@@ -14,9 +17,6 @@
                 <div class="loc">
                     <img v-if="location" :src="Loc" alt="Loc" />
                     <span v-if="location">{{ location }}</span>
-                </div>
-                <div class="at">
-                    <span v-if="friendId != 0">{{ friendId }}</span>
                 </div>
             </div><hr />
             <div className=" bottom">
@@ -34,17 +34,13 @@
                             <button type="button" @click="showModal = true">添加定位</button>
                         </div> 
                         <!-- 调用map模态框 -->
-                        <!-- <mapModal :visible.sync="showModal" @mapModal="closeModal" @mapLocation="addLocation">                             
-                        </mapModal> -->
+                        <mapModal :visible.sync="showModal" @mapModal="closeModal" @mapLocation="addLocation">                             
+                        </mapModal>
                     </label>
                     <div className="item">
                         <img :src="Friend" alt="Friend" />
-                        <!-- <span>@好友</span> -->
-                        <button type="button" @click="showFriModal = true">@好友</button>
-                    </div>
-                    <!-- 调用friend模态框 -->
-                    <!-- <friendModal :visible.sync="showFriModal" @showModal="closeFriModal">
-                    </friendModal> -->
+                        <button type="button" @click="showFriModal = !showFriModal">@好友</button>
+                    </div>              
                 </div>
                 <div className="right">
                     <a-button type="primary" @click="shareHandler" :disabled="!content">
@@ -53,6 +49,7 @@
                 </div>
                     <a-button  @click="clear">重置</a-button>
             </div>
+            <atFriend v-if="showFriModal" @atFriend="addFriend"></atFriend>
         </div>
     </div>
 </template>
@@ -65,14 +62,14 @@ import Loc from "../assets/location.png";
 import { upload } from '../request/request';
 import { share, getAllPost } from "../request/post";
 import mapModal from './mapModal.vue';
-import friendModal from './friendModal.vue';
+import atFriend from "./atFriend.vue";
 import { mapState } from 'vuex';
 
 export default {
     name: 'share',
     components: {
         mapModal,
-        friendModal  
+        atFriend  
     },   
     data() {
         return {
@@ -86,6 +83,7 @@ export default {
             location: "",
             showModal: false,
             friendId:"0",
+            friendName:"",
             showFriModal: false,
         }
     },
@@ -93,6 +91,7 @@ export default {
         ...mapState({
             currentUser: state => state.currentUser
         })
+        
     },
     methods: {
         changeHandler(e) {
@@ -118,10 +117,11 @@ export default {
             this.clear()
         },
         clear(){
-            this.content = "";
-            this.imageUrl = "";
-            this.location = "";
-            this.friendId = "0";
+            this.content = ""
+            this.imageUrl = ""
+            this.location = ""
+            this.friendId = "0"
+            this.friendName = ""
         },
         closeModal(data){
             this.showModal = data
@@ -129,9 +129,11 @@ export default {
         addLocation(data){
             this.location = data
         },
-        closeFriModal(data){
-            this.showFriModal = data
-        }
+        addFriend(data){
+            this.friendId = data.userId
+            this.friendName = data.nickname
+            this.showFriModal = false
+        },
     }
 }
 </script>
@@ -202,9 +204,6 @@ export default {
                         margin-right: 3px;
                 }
 
-                .loc{
-                    margin-left: 10%;
-                }
             }
 
             hr {
@@ -259,7 +258,7 @@ export default {
                         background-color: #5271ff;
                         border-radius: 3px;
                         width: 60px;
-                        margin-left: 20px;
+                        margin-left: 30px;
                     }
                 }
             }

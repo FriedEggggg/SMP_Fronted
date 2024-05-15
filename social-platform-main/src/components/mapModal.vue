@@ -59,9 +59,15 @@ export default {
   //这里运用async/await 进行异步处理，保证BMap加载进来后才执行后面的操作
   async mounted() {
     await loadBMap(); //加载引入BMap
-    this.initMap();
-    this.fixedPos();
   },
+  watch: {  
+    visible(visible) {  
+      if (visible) {  
+        this.initMap();
+        this.fixedPos();
+      }  
+    },  
+  },  
   methods: {
     closeModal() {
       this.$emit("mapModal", false);
