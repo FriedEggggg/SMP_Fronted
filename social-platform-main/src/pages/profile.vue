@@ -37,10 +37,10 @@
                         <i className="iconfont">&#xe719;</i>
                     </div>
                 </div>
-                <Posts :userId="user.userId" />
+                <Posts :userId="userId" />
             </div>
         </div>
-        <a-modal v-model:visible="isOpenUpdate" :style="{ width: `800px` }" :footer="null">
+        <a-modal :visible="isOpenUpdate" :style="{ width: `800px` }" :footer="null">
             <update :user="{ ...user }" :setOpenUpdate="setOpenUpdate" :updateUser="updateUser" />
         </a-modal>
     </div>
@@ -89,6 +89,7 @@ export default {
     },
     computed: {
         isShowUpdateForm() {
+            console.log("userId",this.userId);
             return this.userId === this.$store.state.currentUser.userId;
         },
     },
@@ -101,10 +102,11 @@ export default {
                     this.isLoading = true;
                     this.userId = parseInt(to.params.userId);
                     getProfileData(this.userId).then(res => {
-                        console.log(res);
+                        console.log("user",res);
                         this.isLoading = false;
                         const { code, data } = res.data;
-                        if (code === 1) {
+                        if (code == 1) {
+                            console.log("user",res.data);
                             this.user = data;
                         } else {
                             this.err = "获取数据失败";
@@ -137,6 +139,9 @@ export default {
         gotoChatHandler() {
             this.$router.push(`/chat/${this.user.userId}`)
         }
+    },
+    mounted(){
+        console.log(this.user);
     }
 }
 

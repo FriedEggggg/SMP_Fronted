@@ -8,6 +8,7 @@
       </div>
       <a-button
         class="newBotton"
+        v-if="Business"
         @click="
           () => {
             open = !open;
@@ -80,7 +81,12 @@
     </a-modal>
     <div className="itemList">
       <ul
-        style="display: grid; grid-template-columns: 30% 30% 30%; grid-gap: 3%"
+        style="
+          display: grid;
+          grid-template-columns: 30% 30% 30%;
+          column-gap: 3%;
+          row-gap: 5px;
+        "
       >
         <li v-for="item in itemData">
           <shopItemVue :getCoupon="getCoupon" :itemData="item" />
@@ -170,8 +176,9 @@ const getCoupon = async () => {
 onMounted(async () => {
   getCoupon();
   const res = await isBusiness();
-  if (res.data.data === 1) Business.value = true;
-  else Business.value = false;
+  console.log(res.data);
+  if (res.data.data === 0) Business.value = false;
+  else Business.value = true;
 });
 </script>
 <style lang="scss">

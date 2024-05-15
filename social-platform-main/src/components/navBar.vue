@@ -95,8 +95,8 @@ export default {
       this.$store.commit("setNotReadCount", count);
     });
     isBusiness().then((res) => {
-      if (res.data.data === 0) this.Business = true;
-      else this.Business = false;
+      if (res.data.data === 0) this.Business = false;
+      else this.Business = true;
     });
   },
 };
@@ -122,7 +122,7 @@ export default {
       </div>
     </div>
     <div class="right">
-      <div class="statistics" v-show="Business">
+      <div class="statistics" v-show="!Business">
         <span @click="switchModal">注册商家</span>
       </div>
       <div class="statistics">

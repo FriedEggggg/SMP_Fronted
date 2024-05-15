@@ -48,7 +48,13 @@ export default {
         })
     },
     mounted() {
-        if (this.resources) {
+        let sharePost = this.$route.query.sharePost
+        
+        if(sharePost&&sharePost.trim()!=""){
+            store.commit("setHomePosts", [JSON.parse(sharePost)]);
+            this.isLoading = false;
+            console.log("分享");
+        }else if (this.resources) {
             console.log('posts search');
             store.commit("setHomePosts", this.resources);
             this.isLoading = false;

@@ -22,7 +22,7 @@ const excCoupon = async () => {
 </script>
 <template>
   <div>
-    <a-card bordered hoverable style="width: 240px; position: relative">
+    <a-card bordered hoverable style="position: relative">
       <span style="position: absolute; bottom: 1px; right: 1px"
         >还剩最后{{ props.itemData.couponNum }}个</span
       >

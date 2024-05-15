@@ -10,7 +10,8 @@
                 </div>
                 <div class="right">
                     <p class="name">{{ item.nickname }}</p>
-                    <p class="message">{{ item.latestMsg }}</p>
+                    <a v-if="item.latestMsg.startsWith('$%^&*??share---')">分享内容</a>
+                    <p class="message" v-else>{{ item.latestMsg}}</p>
                     <p class="time">
                         {{ item.latestTime }}
                     </p>
