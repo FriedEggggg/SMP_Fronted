@@ -2,6 +2,7 @@
 import { message } from "ant-design-vue";
 import { useStore } from "vuex";
 import { excCouponAPI } from "../request/coupon";
+import { getProfileData } from "../request/profile";
 import store from "../store/store";
 
 const props = defineProps({
@@ -15,9 +16,13 @@ const excCoupon = async () => {
     props.itemData.id
   );
   if (res.data.data == 1) {
+    let data = await getProfileData(store.state.currentUser.userId);
+    store.commit("curUserUpdate", data.data.data);
+
     message.info("兑换成功");
+
+    props.getCoupon();
   }
-  props.getCoupon();
 };
 </script>
 <template>

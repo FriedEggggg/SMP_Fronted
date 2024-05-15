@@ -11,6 +11,7 @@ const store = createStore({
   },
   mutations: {
     curUserUpdate(state, payload) {
+      console.log(state, payload);
       state.currentUser = payload;
       localStorage.setItem("curUser", JSON.stringify(payload));
     },
