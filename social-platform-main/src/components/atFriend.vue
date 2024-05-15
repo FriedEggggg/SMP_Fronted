@@ -1,6 +1,6 @@
 <template>
     <div class="atFriend">
-        <ul class="friends" style="background-color: white;">  
+        <ul class="atfriends" style="background-color: white;">  
             <li v-for="friend in followingList" :key="friend.userId" class="friend">  
                 <div class="friend-details">  
                     <img :src="friend.profilePic" alt="Profile Picture" @click="at(friend)"/>  
@@ -35,7 +35,7 @@ export default {
 </script>
 
 <style lang="scss">
-.friends {
+.atfriends {
     display: flex;
     list-style-type: none;   
     padding: 0; 

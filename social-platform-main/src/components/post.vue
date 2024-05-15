@@ -30,7 +30,9 @@
             </div>
             <div className="content">
                 <p>{{ post.content }}</p>
-                <span v-if="post.friendId!=0">@{{ friendName }}</span>
+                <router-link v-if="post.friendId!=0" :to="`/profile/${post.friendId}`">
+                    <span >@{{ friendName }}</span>
+                </router-link>
                 <img :src="post.img" alt="" />    
                 <div class="loc">
                     <img v-if="post.location" :src="Loc" alt="Loc" />
@@ -102,6 +104,7 @@ import { getProfileData } from '../request/profile';
 import { mapState } from 'vuex';
 import { getFollowedUsers } from '../request/friend';
 import { sendMessage } from '../request/chat';
+import Loc from "../assets/location.png";
 
 export default {
     props: ['post'],
@@ -116,6 +119,7 @@ export default {
             friendList:[],
             searchFriendList:[],
             shareTmp:{},
+            Loc,
             friendInfo: "",
             friendName: ""
         }
@@ -341,6 +345,19 @@ export default {
                     max-height: 500px;
                     object-fit: contain;
                     margin-top: 20px;
+                }
+                .loc{
+                    margin-top: 5px;
+                    img {
+                        width: 22px;
+                        height: 22px;
+                        margin-right: 5px;
+                    }
+                    span{
+                        position: absolute;
+                        border: 10px;
+                        margin-top: 18px;
+                    }
                 }
             }
 
